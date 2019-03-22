@@ -2,7 +2,8 @@ const Sequelize = require("sequelize");
 
 // Create the connection
 const sequelize = new Sequelize("books-api", "postgres", "", {
-  dialect: "postgres"
+  dialect: "postgres",
+  logging: false
 });
 
 // Pass the models to the connection
