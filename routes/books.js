@@ -1,12 +1,7 @@
-const uuid = require("uuid/v4");
 const express = require("express");
 const router = express.Router();
 const { books: oldBooks } = require("../data/db.json");
 const { Book, Author } = require("../models");
-
-const filterBooksBy = (property, value) => {
-  return oldBooks.filter(b => b[property] === value);
-};
 
 const verifyToken = (req, res, next) => {
   const { authorization } = req.headers;
@@ -35,10 +30,34 @@ router
     const oldBooks = await Book.findAll({ include: [Author] });
     return res.json(oldBooks);
   })
-  .post(verifyToken, (req, res) => {
-    const book = req.body;
-    book.id = uuid();
-    res.status(201).json(req.body);
+  .post(verifyToken, async (req, res) => {
+    const { title, author } = req.body;
+    const [foundAuthor] = await Author.findOrCreate({
+      where: { name: author }
+    });
+    const newBook = await Book.create({ title });
+    await newBook.setAuthor(foundAuthor);
+    const newBookWithAuthor = await Book.findOne({
+      where: { id: newBook.id },
+      include: [Author]
+    });
+    return res.status(201).json(newBookWithAuthor);
+
+    /* With Associations */
+    // const { title, author } = req.body;
+    // const foundAuthor = await Author.findOne({ where: { name: author } });
+    // if (!foundAuthor) {
+    //   const createdBook = await Book.create(
+    //     { title, author: { name: author } },
+    //     { include: [Author] }
+    //   );
+    //   return res.status(201).json(createdBook);
+    // }
+    // const createdBook = await Book.create(
+    //   { title, authorId: foundAuthor.id },
+    //   { include: [Author] }
+    // );
+    // return res.status(201).json(createdBook);
   });
 
 router

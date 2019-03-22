@@ -118,11 +118,9 @@ describe("Books", () => {
         .send({ title: "The Handmaid's Tale", author: "Margaret Atwood" })
         .expect(201)
         .then(res => {
-          expect(res.body).toEqual({
-            id: expect.any(String),
-            title: "The Handmaid's Tale",
-            author: "Margaret Atwood"
-          });
+          const book = res.body;
+          expect(book.title).toEqual("The Handmaid's Tale");
+          expect(book.author.name).toEqual("Margaret Atwood");
         });
     });
   });

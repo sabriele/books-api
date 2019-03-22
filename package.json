@@ -26,5 +26,8 @@
     "jest": "^24.5.0",
     "nodemon": "^1.18.10",
     "supertest": "^4.0.0"
+  },
+  "jest": {
+    "verbose": true
   }
 }
