@@ -126,20 +126,21 @@ describe("Books", () => {
   });
 
   describe("[PUT] Edits an existing book", () => {
-    test("successfully edits a book", () => {
+    test("successfully edits a book title AND author", () => {
       const id = "5";
       return request(app)
         .put(route(id))
         .send({
           id: 5,
           title: "The Perennial Philosophy",
-          author: "Aldous Huxley"
+          author: "A. Huxley"
         })
         .expect(202)
-        .expect({
-          id: 5,
-          title: "The Perennial Philosophy",
-          author: "Aldous Huxley"
+        .then(res => {
+          const book = res.body;
+          expect(book.id).toEqual(5);
+          expect(book.title).toEqual("The Perennial Philosophy");
+          expect(book.author.name).toEqual("A. Huxley");
         });
     });
 
