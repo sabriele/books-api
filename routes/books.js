@@ -84,10 +84,14 @@ router
       return res.sendStatus(400);
     }
   })
-  .delete((req, res) => {
-    const book = oldBooks.find(b => b.id === req.params.id);
-    if (book) return res.sendStatus(202);
-    return res.sendStatus(400);
+  .delete(async (req, res) => {
+    try {
+      const book = await Book.destroy({ where: { id: req.params.id } });
+      if (book) return res.sendStatus(202);
+      return res.sendStatus(400);
+    } catch (error) {
+      return res.sendStatus(400);
+    }
   });
 
 module.exports = router;
