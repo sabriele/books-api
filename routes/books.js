@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const { books: oldBooks } = require("../data/db.json");
 const { Book, Author } = require("../models");
 
 const verifyToken = (req, res, next) => {
@@ -27,8 +26,8 @@ router
       });
       return res.json(books);
     }
-    const oldBooks = await Book.findAll({ include: [Author] });
-    return res.json(oldBooks);
+    const books = await Book.findAll({ include: [Author] });
+    return res.json(books);
   })
   .post(verifyToken, async (req, res) => {
     const { title, author } = req.body;
